@@ -420,7 +420,7 @@ function loadSelectedChat() {
   const selectedChat = document.getElementById("chat-select").value;
   const obj = JSON.parse(localStorage.getItem(selectedChat));
   document.getElementById("chat-history").innerHTML = obj.history;
-  document.getElementById("chat-history").context = obj.context;
+  // document.getElementById("chat-history").context = obj.context;
   updateModelInQueryString(obj.model)
   document.getElementById('chat-container').style.display = 'block';
 }
