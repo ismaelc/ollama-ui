@@ -63,7 +63,8 @@ function postRequest(data, signal) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data),
-    signal: signal
+    signal: signal,
+    //raw: true,
   });
 }
 
