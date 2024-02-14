@@ -180,11 +180,12 @@ async function submitRequest() {
     prompt: `${parsedHistory}\n[USER]: ${input}\n[ASSISTANT]:`,
     // context: context,
     options: {
-      stop: ['[USER]:', '[ASSISTANT]:']
+      stop: ['[USER]:', '[ASSISTANT]:'],
+      temperature: 0.1,
     }
   };
 
-  console.log('[DATA]', data)
+  // console.log('[DATA]', data)
 
   let userMessageDiv = document.createElement('div');
   userMessageDiv.className = 'mb-2 user-message';
@@ -375,7 +376,6 @@ document.getElementById('user-input').addEventListener('keydown', function (e) {
   }
 });
 
-
 window.onload = () => {
   updateChatList();
   populateModels();
@@ -387,8 +387,25 @@ window.onload = () => {
   document.getElementById("saveName").addEventListener("click", saveChat);
   document.getElementById("chat-select").addEventListener("change", loadSelectedChat);
   document.getElementById("host-address").addEventListener("change", setHostAddress);
+  document.getElementById("export-button").addEventListener("click", exportChat);
+  document.getElementById("import-button").addEventListener("click", importChat);
   // Event listener for changes to the system text field
   document.getElementById('system-text').addEventListener('input', saveSystemText);
+  document.getElementById('file-input').addEventListener('change', function(e) {
+    const files = e.target.files;
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const contents = e.target.result;
+        const chatName = file.name.replace('.txt', '');
+        localStorage.setItem(chatName, contents);
+        updateChatList();
+      };
+      reader.readAsText(file);
+    }
+  });
+
 }
 
 function deleteChat() {
@@ -452,4 +469,22 @@ function loadSystemText() {
   if (systemText) {
     document.getElementById('system-text').value = systemText;
   }
+}
+
+// Function to export chat to a local file
+function exportChat() {
+  console.log('exporting chat')
+  const selectedChat = document.getElementById("chat-select").value;
+  const data = localStorage.getItem(selectedChat);
+  const blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.download = selectedChat + '.txt';
+  link.href = url;
+  link.click();
+}
+
+// Function to import chat from a local file
+function importChat() {
+  document.getElementById('file-input').click();
 }
